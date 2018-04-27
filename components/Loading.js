@@ -6,16 +6,25 @@ import {
   StyleSheet,
   Animated
 } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  lineContainer: {
+    flexDirection: 'row',
+    height: 35,
+    alignSelf: 'stretch',
+    alignItems: 'flex-end',
     justifyContent: 'center'
   },
   line: {
-    height: 5,
-    width: 75
+    height: 3,
+    width: 75,
+    marginBottom: 5
   }
 })
 
@@ -64,15 +73,18 @@ class Loading extends Component {
     if (this.props.loading) {
       return (
         <View style={styles.container}>
-          <Animated.View style={[
-            styles.line,
-            {
-              backgroundColor: this.props.theme,
-              width,
-              transform: [{ translateX }]
-            }
-          ]}
-          />
+          <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)']} style={styles.lineContainer}>
+            <Animated.View style={[
+              styles.line,
+              {
+                backgroundColor: this.props.theme,
+                width,
+                opacity: 0.7,
+                transform: [{ translateX }]
+              }
+            ]}
+            />
+          </LinearGradient>
         </View>
       )
     }

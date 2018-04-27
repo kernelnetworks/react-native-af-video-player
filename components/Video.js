@@ -13,7 +13,7 @@ import {
 import VideoPlayer from 'react-native-video'
 import KeepAwake from 'react-native-keep-awake'
 import Orientation from 'react-native-orientation'
-import Icons from 'react-native-vector-icons/MaterialIcons'
+import Icon from '../../../app/components/Icon'
 import { Controls } from './'
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
@@ -446,7 +446,7 @@ Video.defaultProps = {
   logo: undefined,
   resizeMode: 'contain',
   onMorePress: undefined,
-  onFullScreen: () => {},
+  onFullScreen: () => { },
   onTimedMetadata: undefined,
   theme: 'white',
   placeholder: undefined,
@@ -460,10 +460,10 @@ Video.defaultProps = {
   lockPortraitOnFsExit: false,
   style: {},
   error: true,
-  onError: () => {},
-  onEnd: () => {},
-  onProgress: () => {},
-  onLoad: () => {},
+  onError: () => { },
+  onEnd: () => { },
+  onProgress: () => { },
+  onLoad: () => { },
   lockRatio: undefined
 }
 

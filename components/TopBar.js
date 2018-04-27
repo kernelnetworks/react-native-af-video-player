@@ -46,29 +46,34 @@ const TopBar = (props) => {
     onMorePress
   } = props
   return (
-    <LinearGradient colors={['rgba(0,0,0,0.75)', 'rgba(0,0,0,0)']} style={styles.container}>
-      <View style={styles.row}>
-        { logo && <Image style={styles.logo} resizeMode="contain" source={{ uri: logo }} />}
-        <Text
-          style={[styles.title, { color: theme }]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {title}
-        </Text>
-        { more &&
-          <ToggleIcon
-            style={styles.more}
-            onPress={() => onMorePress()}
-            paddingRight
-            iconOff="more-horiz"
-            iconOn="more-horiz"
-            theme={theme}
-            size={25}
-          />
-        }
-      </View>
-    </LinearGradient>
+    <View>
+      {title || logo ?
+        <LinearGradient colors={['rgba(0,0,0,0.75)', 'rgba(0,0,0,0)']} style={styles.container}>
+          <View style={styles.row}>
+            {logo && <Image style={styles.logo} resizeMode="contain" source={{ uri: logo }} />}
+            <Text
+              style={[styles.title, { color: theme }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {title}
+            </Text>
+            {more &&
+              <ToggleIcon
+                style={styles.more}
+                onPress={() => onMorePress()}
+                paddingRight
+                iconOff="more-horiz"
+                iconOn="more-horiz"
+                theme={theme}
+                size={25}
+              />
+            }
+          </View>
+        </LinearGradient>
+        : <View style={styles.container} />
+      }
+    </View>
   )
 }
 

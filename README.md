@@ -28,7 +28,6 @@ Then link
 ```shell
 react-native link react-native-video
 react-native link react-native-keep-awake
-react-native link react-native-vector-icons
 react-native link react-native-orientation
 react-native link react-native-linear-gradient
 ```
@@ -277,7 +276,6 @@ You can also apply styles to the video by wrapping our Container around it. Note
 
 - [ ] Improve scrubber controls for iOS
 - [ ] Customise specific components for better theming
-- [ ] Option to use custom icons
 - [ ] Support Immersive mode for Android
 - [x] Provide fullscreen support within a ScrollView
 
