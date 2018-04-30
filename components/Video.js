@@ -8,7 +8,8 @@ import {
   BackHandler,
   Animated,
   Image,
-  Alert
+  Alert,
+  TouchableOpacity
 } from 'react-native'
 import VideoPlayer from 'react-native-video'
 import KeepAwake from 'react-native-keep-awake'
@@ -31,6 +32,19 @@ const styles = StyleSheet.create({
   image: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 99
+  },
+  playButton: {
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  playIcon: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   }
 })
 
@@ -289,12 +303,16 @@ class Video extends Component {
         style={[styles.background, fullScreen ? styles.fullScreen : inline]}
       >
         <Text style={textStyle}>Retry</Text>
-        <Icons
-          name="replay"
-          size={60}
-          color={this.props.theme}
+        <TouchableOpacity
+          style={styles.playButton}
           onPress={() => this.setState({ renderError: false })}
-        />
+        >
+          <Icon
+            style={styles.playIcon}
+            iconStyle={{ fontSize: 40, color: "white" }}
+            name='play'
+          />
+        </TouchableOpacity>
       </Animated.View>
     )
   }
