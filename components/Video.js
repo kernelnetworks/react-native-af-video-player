@@ -9,7 +9,8 @@ import {
   Animated,
   Image,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native'
 import VideoPlayer from 'react-native-video'
 import KeepAwake from 'react-native-keep-awake'
@@ -61,21 +62,26 @@ class Video extends Component {
       progress: 0,
       currentTime: 0,
       seeking: false,
-      renderError: false
+      renderError: false,
+      rotation: "0deg",
+      orientation: Orientation.getInitialOrientation()
     }
     this.animInline = new Animated.Value(Win.width * 0.5625)
     this.animFullscreen = new Animated.Value(Win.width * 0.5625)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
+    this.orientationDidChange = this.orientationDidChange.bind(this)
   }
 
   componentDidMount() {
-    Dimensions.addEventListener('change', this.onRotated)
+    Orientation.addOrientationListener(this.orientationDidChange);
+    Orientation.addSpecificOrientationListener(this.onRotated);
     BackHandler.addEventListener('hardwareBackPress', this.BackHandler)
   }
 
   componentWillUnmount() {
-    Dimensions.removeEventListener('change', this.onRotated)
+    Orientation.removeOrientationListener(this.orientationDidChange);
+    Orientation.removeSpecificOrientationListener(this.onRotated);
     BackHandler.removeEventListener('hardwareBackPress', this.BackHandler)
   }
 
@@ -127,32 +133,37 @@ class Video extends Component {
     })
   }
 
-  onRotated({ window: { width, height } }) {
+  orientationDidChange = orientation => {
+    if (orientation !== this.state.orientation) {
+      this.setState({ orientation });
+    }
+  };
+
+  onRotated = orientation => {
     // Add this condition incase if inline and fullscreen options are turned on
     if (this.props.inlineOnly) return
-    const orientation = width > height ? 'LANDSCAPE' : 'PORTRAIT'
-    if (this.props.rotateToFullScreen) {
-      if (orientation === 'LANDSCAPE') {
-        this.setState({ fullScreen: true }, () => {
-          this.animToFullscreen(height)
-          this.props.onFullScreen(this.state.fullScreen)
-        })
-        return
-      }
-      if (orientation === 'PORTRAIT') {
-        this.setState({
-          fullScreen: false,
-          paused: this.props.fullScreenOnly || this.state.paused
-        }, () => {
-          this.animToInline()
-          this.props.onFullScreen(this.state.fullScreen)
-        })
-        return
-      }
-    } else {
-      this.animToInline()
+
+    let { rotation } = this.state;
+    switch (orientation) {
+      case "PORTRAIT":
+        this.setState({ rotation: "0deg" });
+        if (this.state.fullScreen) this.animToFullscreen(Win.height)
+        break;
+      case "LANDSCAPE-LEFT":
+        this.setState({ rotation: "90deg" });
+        if (this.state.fullScreen) this.animToFullscreen(Win.width)
+        break;
+      case "PORTRAITUPSIDEDOWN":
+        this.setState({ rotation: "180deg" });
+        if (this.state.fullScreen) this.animToFullscreen(Win.height)
+        break;
+      case "LANDSCAPE-RIGHT":
+        this.setState({ rotation: "270deg" });
+        if (this.state.fullScreen) this.animToFullscreen(Win.width)
+        break;
+      default:
+        this.setState({ rotation: "0deg" });
     }
-    if (this.state.fullScreen) this.animToFullscreen(height)
   }
 
   onSeekRelease(pos) {
@@ -300,7 +311,7 @@ class Video extends Component {
     const textStyle = { color: 'white', padding: 10 }
     return (
       <Animated.View
-        style={[styles.background, fullScreen ? styles.fullScreen : inline]}
+        style={[styles.background, fullScreen ? styles.fullScreen : inline,]}
       >
         <Text style={textStyle}>Retry</Text>
         <TouchableOpacity
@@ -326,7 +337,9 @@ class Video extends Component {
       progress,
       duration,
       inlineHeight,
-      currentTime
+      currentTime,
+      rotation,
+      orientation
     } = this.state
 
     const {
@@ -352,15 +365,28 @@ class Video extends Component {
       alignSelf: 'stretch'
     }
 
+    let landscapePos = (Win.height - Win.width) / 2;
+    let resize;
+
+    if (Platform.OS === "android") {
+      resize = orientation === "LANDSCAPE"
+        ? { height: Win.width, width: Win.height }
+        : { height: Win.height, width: Win.width }
+    } else {
+      resize = orientation === "LANDSCAPE"
+        ? { height: this.animFullscreen, width: Win.height, left: -landscapePos, top: landscapePos }
+        : { height: this.animFullscreen, width: Win.width }
+    }
+
     return (
       <Animated.View
-        style={[
-          styles.background,
-          fullScreen ?
-            (styles.fullScreen, { height: this.animFullscreen })
-            : { height: this.animInline },
-          fullScreen ? null : style
-        ]}
+        style={
+          [
+            styles.background,
+            { transform: [{ rotate: rotation }] },
+            fullScreen ? (styles.fullScreen, resize) : { height: this.animInline },
+            fullScreen ? null : style
+          ]}
       >
         <StatusBar hidden={fullScreen} />
         {
@@ -409,7 +435,7 @@ class Video extends Component {
           theme={theme}
           inlineOnly={inlineOnly}
         />
-      </Animated.View>
+      </Animated.View >
     )
   }
 
