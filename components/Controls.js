@@ -127,7 +127,8 @@ class Controls extends Component {
       currentTime,
       duration,
       theme,
-      inlineOnly
+      inlineOnly,
+      fullScreenControlsOnly
     } = this.props
 
     return (
@@ -148,21 +149,25 @@ class Controls extends Component {
               theme={theme}
             />
           </Animated.View>
-          <ControlBar
-            toggleFS={() => this.props.toggleFS()}
-            toggleMute={() => this.props.toggleMute()}
-            togglePlay={() => this.props.togglePlay()}
-            muted={muted}
-            paused={paused}
-            fullscreen={fullscreen}
-            onSeek={pos => this.onSeek(pos)}
-            onSeekRelease={pos => this.onSeekRelease(pos)}
-            progress={progress}
-            currentTime={currentTime}
-            duration={duration}
-            theme={theme}
-            inlineOnly={inlineOnly}
-          />
+          {!fullScreenControlsOnly || (fullScreenControlsOnly && fullscreen) ?
+            <ControlBar
+              toggleFS={() => this.props.toggleFS()}
+              toggleMute={() => this.props.toggleMute()}
+              togglePlay={() => this.props.togglePlay()}
+              muted={muted}
+              paused={paused}
+              fullscreen={fullscreen}
+              onSeek={pos => this.onSeek(pos)}
+              onSeekRelease={pos => this.onSeekRelease(pos)}
+              progress={progress}
+              currentTime={currentTime}
+              duration={duration}
+              theme={theme}
+              inlineOnly={inlineOnly}
+            />
+            :
+            <View style={{ height: 35 }} />
+          }
         </Animated.View>
       </Touchable>
     )

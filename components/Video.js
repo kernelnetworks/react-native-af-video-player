@@ -357,11 +357,12 @@ class Video extends Component {
       onMorePress,
       inlineOnly,
       playInBackground,
-      playWhenInactive
+      playWhenInactive,
+      fullScreenControlsOnly
     } = this.props
 
     const inline = {
-      height: inlineHeight,
+      height: this.props.height ? this.props.height : inlineHeight,
       alignSelf: 'stretch'
     }
 
@@ -384,7 +385,7 @@ class Video extends Component {
           [
             styles.background,
             { transform: [{ rotate: rotation }] },
-            fullScreen ? (styles.fullScreen, resize) : { height: this.animInline },
+            fullScreen ? (styles.fullScreen, resize) : inline,
             fullScreen ? null : style
           ]}
       >
@@ -434,6 +435,7 @@ class Video extends Component {
           onMorePress={() => onMorePress()}
           theme={theme}
           inlineOnly={inlineOnly}
+          fullScreenControlsOnly={fullScreenControlsOnly}
         />
       </Animated.View >
     )
