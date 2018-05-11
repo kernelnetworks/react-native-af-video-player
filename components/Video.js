@@ -358,7 +358,8 @@ class Video extends Component {
       inlineOnly,
       playInBackground,
       playWhenInactive,
-      fullScreenControlsOnly
+      fullScreenControlsOnly,
+      initialSeek
     } = this.props
 
     const inline = {
@@ -408,7 +409,10 @@ class Video extends Component {
           playWhenInactive={playWhenInactive} // [iOS] Video continues to play when control or notification center are shown.
           // progressUpdateInterval={250.0}          // [iOS] Interval to fire onProgress (default to ~250ms)
           onLoadStart={() => this.onLoadStart()} // Callback when video starts to load
-          onLoad={e => this.onLoad(e)} // Callback when video loads
+          onLoad={e => {
+            this.onLoad(e)// Callback when video loads
+            initialSeek && this.player.seek(initialSeek)
+          }}
           onProgress={e => this.progress(e)} // Callback every ~250ms with currentTime
           onEnd={() => this.onEnd()}
           onError={e => this.onError(e)}
