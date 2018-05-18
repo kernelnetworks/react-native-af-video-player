@@ -134,13 +134,17 @@ class Controls extends Component {
     return (
       <Touchable onPress={() => this.hideControls()}>
         <Animated.View style={[styles.container, { opacity: this.animControls }]}>
-          <TopBar
-            title={title}
-            logo={logo}
-            more={more}
-            onMorePress={() => onMorePress()}
-            theme={theme}
-          />
+          {fullscreen &&
+            <TopBar
+              fullscreen={fullscreen}
+              toggleFS={() => this.props.toggleFS()}
+              title={title}
+              logo={logo}
+              more={more}
+              onMorePress={() => onMorePress()}
+              theme={theme}
+            />
+          }
           <Animated.View style={[styles.flex, { transform: [{ scale: this.scale }] }]}>
             <PlayButton
               onPress={() => this.props.togglePlay()}
@@ -149,9 +153,8 @@ class Controls extends Component {
               theme={theme}
             />
           </Animated.View>
-          {!fullScreenControlsOnly || (fullScreenControlsOnly && fullscreen) ?
+          {fullscreen &&
             <ControlBar
-              toggleFS={() => this.props.toggleFS()}
               toggleMute={() => this.props.toggleMute()}
               togglePlay={() => this.props.togglePlay()}
               muted={muted}
@@ -165,8 +168,6 @@ class Controls extends Component {
               theme={theme}
               inlineOnly={inlineOnly}
             />
-            :
-            <View style={{ height: 35 }} />
           }
         </Animated.View>
       </Touchable>

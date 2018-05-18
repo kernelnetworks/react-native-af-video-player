@@ -7,7 +7,7 @@ import { ToggleIcon, Time, Scrubber } from './'
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 35,
+    height: 40,
     alignSelf: 'stretch',
     justifyContent: 'flex-end'
   }
@@ -45,21 +45,11 @@ const ControlBar = (props) => {
         size={20}
       />
       <Time time={duration} theme={theme} />
-      { !inlineOnly &&
-      <ToggleIcon
-        paddingRight
-        onPress={() => props.toggleFS()}
-        iconOff="fullscreen"
-        iconOn="fullscreen-exit"
-        isOn={fullscreen}
-        theme={theme}
-      />}
     </LinearGradient>
   )
 }
 
 ControlBar.propTypes = {
-  toggleFS: PropTypes.func,
   toggleMute: PropTypes.func,
   onSeek: PropTypes.func,
   onSeekRelease: PropTypes.func,
@@ -73,7 +63,6 @@ ControlBar.propTypes = {
 }
 
 ControlBar.defaultProps = {
-  toggleFS: undefined,
   toggleMute: undefined,
   onSeek: undefined,
   onSeekRelease: undefined,

@@ -6,7 +6,7 @@ import {
   StatusBar,
   Dimensions,
   BackHandler,
-  Animated,
+  View,
   Image,
   Alert,
   TouchableOpacity,
@@ -66,8 +66,6 @@ class Video extends Component {
       rotation: "0deg",
       orientation: Orientation.getInitialOrientation()
     }
-    this.animInline = new Animated.Value(Win.width * 0.5625)
-    this.animFullscreen = new Animated.Value(Win.width * 0.5625)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
     this.orientationDidChange = this.orientationDidChange.bind(this)
@@ -103,25 +101,18 @@ class Video extends Component {
       loading: false,
       inlineHeight,
       duration: data.duration
-    }, () => {
-      Animated.timing(this.animInline, { toValue: inlineHeight, duration: 200 }).start()
-      if (!this.state.paused) {
-        KeepAwake.activate()
-        if (this.props.fullScreenOnly) {
-          this.setState({ fullScreen: true }, () => {
-            this.props.onFullScreen(this.state.fullScreen)
-            this.animToFullscreen(Win.height)
-            if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
-          })
+    }
+      , () => {
+        if (!this.state.paused) {
+          KeepAwake.activate()
+          if (this.props.fullScreenOnly) {
+            this.setState({ fullScreen: true }
+            )
+          }
         }
       }
-    })
+    )
   }
-
-  // onBuffer() {
-  //   // console.log('buffering')
-  //   this.setState({ loading: true, paused: true })
-  // }
 
   onEnd() {
     this.props.onEnd()
@@ -147,19 +138,15 @@ class Video extends Component {
     switch (orientation) {
       case "PORTRAIT":
         this.setState({ rotation: "0deg" });
-        if (this.state.fullScreen) this.animToFullscreen(Win.height)
         break;
       case "LANDSCAPE-LEFT":
         this.setState({ rotation: "90deg" });
-        if (this.state.fullScreen) this.animToFullscreen(Win.width)
         break;
       case "PORTRAITUPSIDEDOWN":
         this.setState({ rotation: "180deg" });
-        if (this.state.fullScreen) this.animToFullscreen(Win.height)
         break;
       case "LANDSCAPE-RIGHT":
         this.setState({ rotation: "270deg" });
-        if (this.state.fullScreen) this.animToFullscreen(Win.width)
         break;
       default:
         this.setState({ rotation: "0deg" });
@@ -196,7 +183,6 @@ class Video extends Component {
   BackHandler() {
     if (this.state.fullScreen) {
       this.setState({ fullScreen: false }, () => {
-        this.animToInline()
         this.props.onFullScreen(this.state.fullScreen)
         if (this.props.fullScreenOnly && !this.state.paused) this.togglePlay()
         if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
@@ -226,9 +212,6 @@ class Video extends Component {
             this.setState({ fullScreen: true }, () => {
               this.props.onFullScreen(this.state.fullScreen)
               const initialOrient = Orientation.getInitialOrientation()
-              const height = orientation !== initialOrient ?
-                Win.width : Win.height
-              this.animToFullscreen(height)
               if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
             })
           }
@@ -245,14 +228,10 @@ class Video extends Component {
       Orientation.getOrientation((e, orientation) => {
         if (this.state.fullScreen) {
           const initialOrient = Orientation.getInitialOrientation()
-          const height = orientation !== initialOrient ?
-            Win.width : Win.height
-          this.animToFullscreen(height)
           this.props.onFullScreen(this.state.fullScreen)
           if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
         } else {
           if (this.props.fullScreenOnly) this.setState({ paused: true })
-          this.animToInline()
           this.props.onFullScreen(this.state.fullScreen)
           if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
           setTimeout(() => {
@@ -261,21 +240,6 @@ class Video extends Component {
         }
       })
     })
-  }
-
-  animToFullscreen(height) {
-    Animated.parallel([
-      Animated.timing(this.animFullscreen, { toValue: height, duration: 200 }),
-      Animated.timing(this.animInline, { toValue: height, duration: 200 })
-    ]).start()
-  }
-
-  animToInline(height) {
-    const newHeight = height || this.state.inlineHeight
-    Animated.parallel([
-      Animated.timing(this.animFullscreen, { toValue: newHeight, duration: 100 }),
-      Animated.timing(this.animInline, { toValue: this.state.inlineHeight, duration: 100 })
-    ]).start()
   }
 
   toggleMute() {
@@ -303,14 +267,14 @@ class Video extends Component {
   }
 
   renderError() {
-    const { fullScreen } = this.state
+    const { fullScreen, inlineHeight } = this.state
     const inline = {
-      height: this.animInline,
+      height: inlineHeight,
       alignSelf: 'stretch'
     }
     const textStyle = { color: 'white', padding: 10 }
     return (
-      <Animated.View
+      <View
         style={[styles.background, fullScreen ? styles.fullScreen : inline,]}
       >
         <Text style={textStyle}>Retry</Text>
@@ -324,7 +288,7 @@ class Video extends Component {
             name='play'
           />
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     )
   }
 
@@ -368,28 +332,24 @@ class Video extends Component {
     }
 
     let landscapePos = (Win.height - Win.width) / 2;
-    let resize;
+    let resize = orientation === "LANDSCAPE"
+      ? { height: Win.width, width: Win.height }
+      : { height: Win.height, width: Win.width }
 
-    if (Platform.OS === "android") {
-      resize = orientation === "LANDSCAPE"
-        ? { height: Win.width, width: Win.height }
-        : { height: Win.height, width: Win.width }
-    } else {
-      resize = orientation === "LANDSCAPE"
-        ? { height: this.animFullscreen, width: Win.height, left: -landscapePos, top: landscapePos }
-        : { height: this.animFullscreen, width: Win.width }
-    }
+    let rotationStyle = {
+      transform: [{ rotate: rotation }],
+      left: Platform.OS === "ios" && orientation === "LANDSCAPE" ? -landscapePos : null,
+      top: Platform.OS === "ios" && orientation === "LANDSCAPE" ? landscapePos : null
+    };
 
     return (
-      <Animated.View
-        style={
-          [
-            styles.background,
-            { transform: [{ rotate: rotation }] },
-            fullScreen ? (styles.fullScreen, resize) : inline,
-            fullScreen ? null : style
-          ]}
-      >
+      <View style={
+        [
+          fullScreen && rotationStyle,
+          styles.background,
+          fullScreen ? resize : inline
+        ]
+      }>
         <StatusBar hidden={fullScreen} />
         {
           ((loading && placeholder) || currentTime < 0.1) &&
@@ -400,7 +360,7 @@ class Video extends Component {
           paused={paused}
           resizeMode={resizeMode}
           repeat={loop}
-          style={fullScreen ? styles.fullScreen : inline}
+          style={fullScreen ? resize : inline}
           ref={(ref) => { this.player = ref }}
           rate={rate}
           volume={volume}
@@ -442,7 +402,7 @@ class Video extends Component {
           inlineOnly={inlineOnly}
           fullScreenControlsOnly={fullScreenControlsOnly}
         />
-      </Animated.View >
+      </View >
     )
   }
 

@@ -5,17 +5,18 @@ import {
   View,
   StyleSheet,
   Text,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native'
 
 import LinearGradient from 'react-native-linear-gradient'
-import { ToggleIcon } from './'
+import Icon from '../../../app/components/Icon'
 
 const backgroundColor = 'transparent'
 
 const styles = StyleSheet.create({
   container: {
-    height: 35,
+    height: 40,
     justifyContent: 'center'
   },
   row: {
@@ -26,9 +27,10 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     backgroundColor,
-    paddingLeft: 10,
-    paddingRight: 35,
-    fontSize: 16
+    paddingLeft: 40,
+    paddingRight: 30,
+    fontSize: 14,
+    textAlign: "center"
   },
   logo: {
     marginLeft: 5,
@@ -43,41 +45,47 @@ const TopBar = (props) => {
     more,
     title,
     theme,
-    onMorePress
+    onMorePress,
+    toggleFS,
+    fullscreen
   } = props
   return (
     <View>
-      {title || logo ?
+      {fullscreen ?
         <LinearGradient colors={['rgba(0,0,0,0.75)', 'rgba(0,0,0,0)']} style={styles.container}>
           <View style={styles.row}>
             {logo && <Image style={styles.logo} resizeMode="contain" source={{ uri: logo }} />}
-            <Text
-              style={[styles.title, { color: theme }]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {title}
-            </Text>
-            {more &&
-              <ToggleIcon
-                style={styles.more}
-                onPress={() => onMorePress()}
-                paddingRight
-                iconOff="more-horiz"
-                iconOn="more-horiz"
-                theme={theme}
-                size={25}
-              />
+            {title ?
+              <Text
+                style={[styles.title, { color: theme }]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {title}
+              </Text>
+              :
+              <View style={{ flex: 1 }} />
             }
+            <TouchableOpacity
+              style={{ width: 40, height: 40, justifyContent: "center", alignItems: "center" }}
+              onPress={() => toggleFS()}
+            >
+              <Icon
+                iconStyle={{ fontSize: 24, color: "white" }}
+                name="clear"
+              />
+            </TouchableOpacity>
           </View>
         </LinearGradient>
-        : <View style={styles.container} />
+        :
+        <View style={styles.container} />
       }
     </View>
   )
 }
 
 TopBar.propTypes = {
+  toggleFS: PropTypes.func,
   title: PropTypes.string,
   logo: PropTypes.string,
   more: PropTypes.bool,
@@ -86,6 +94,7 @@ TopBar.propTypes = {
 }
 
 TopBar.defaultProps = {
+  toggleFS: undefined,
   title: '',
   logo: undefined,
   more: false,
