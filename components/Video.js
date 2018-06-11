@@ -401,6 +401,7 @@ class Video extends Component {
           theme={theme}
           inlineOnly={inlineOnly}
           fullScreenControlsOnly={fullScreenControlsOnly}
+          {...{ rotation }}
         />
       </View >
     )

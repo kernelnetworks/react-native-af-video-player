@@ -20,12 +20,12 @@ const styles = StyleSheet.create({
 
 const Scrubber = (props) => {
   const trackColor = 'rgba(255,255,255,0.5)'
-  const { progress, theme } = props
+  const { progress, theme, rotation } = props
   const thumbStyle = { width: 15, height: 15 }
   const trackStyle = { borderRadius: 1 }
   return (
     <View style={styles.container}>
-      { Platform.OS === 'ios' ?
+      {Platform.OS === 'ios' ?
         <Slider
           onValueChange={val => props.onSeek(val)}
           onSlidingComplete={val => props.onSeekRelease(val)}
@@ -35,8 +35,9 @@ const Scrubber = (props) => {
           trackStyle={trackStyle}
           minimumTrackTintColor={theme}
           maximumTrackTintColor={trackColor}
+          {...{ rotation }}
         />
-      :
+        :
         <RNSlider
           style={styles.slider}
           onValueChange={val => props.onSeek(val)}
@@ -55,14 +56,16 @@ Scrubber.propTypes = {
   onSeek: PropTypes.func,
   onSeekRelease: PropTypes.func,
   progress: PropTypes.number,
-  theme: PropTypes.string
+  theme: PropTypes.string,
+  rotation: PropTypes.string,
 }
 
 Scrubber.defaultProps = {
   onSeek: undefined,
   onSeekRelease: undefined,
   progress: 0,
-  theme: null
+  theme: null,
+  rotation: "0deg"
 }
 
 export { Scrubber }

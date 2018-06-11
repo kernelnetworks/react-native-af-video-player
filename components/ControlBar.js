@@ -23,7 +23,8 @@ const ControlBar = (props) => {
     muted,
     fullscreen,
     theme,
-    inlineOnly
+    inlineOnly,
+    rotation
   } = props
 
   return (
@@ -34,6 +35,7 @@ const ControlBar = (props) => {
         onSeekRelease={pos => onSeekRelease(pos)}
         progress={progress}
         theme={theme}
+        {...{ rotation }}
       />
       <ToggleIcon
         paddingLeft
@@ -59,7 +61,8 @@ ControlBar.propTypes = {
   progress: PropTypes.number,
   currentTime: PropTypes.number,
   duration: PropTypes.number,
-  theme: PropTypes.string
+  theme: PropTypes.string,
+  rotation: PropTypes.string
 }
 
 ControlBar.defaultProps = {
@@ -72,7 +75,8 @@ ControlBar.defaultProps = {
   progress: 0,
   currentTime: 0,
   duration: 0,
-  theme: null
+  theme: null,
+  rotation: "0deg"
 }
 
 export { ControlBar }

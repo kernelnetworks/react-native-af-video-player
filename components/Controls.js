@@ -128,7 +128,8 @@ class Controls extends Component {
       duration,
       theme,
       inlineOnly,
-      fullScreenControlsOnly
+      fullScreenControlsOnly,
+      rotation
     } = this.props
 
     return (
@@ -167,6 +168,7 @@ class Controls extends Component {
               duration={duration}
               theme={theme}
               inlineOnly={inlineOnly}
+              {...{ rotation }}
             />
           }
         </Animated.View>
@@ -201,7 +203,8 @@ Controls.propTypes = {
   duration: PropTypes.number,
   title: PropTypes.string,
   logo: PropTypes.string,
-  theme: PropTypes.string
+  theme: PropTypes.string,
+  rotation: PropTypes.string
 }
 
 Controls.defaultProps = {
@@ -222,7 +225,8 @@ Controls.defaultProps = {
   duration: 0,
   title: '',
   logo: undefined,
-  theme: null
+  theme: null,
+  rotation: "0deg"
 }
 
 export { Controls }
