@@ -229,18 +229,27 @@ class Video extends Component {
   }
 
   toggleFS() {
+    let { onFullScreen, rotateToFullScreen, fullScreenOnly, lockPortraitOnFsExit, fullscreenLandscape,
+      exitFullscreen } = this.props
+
+    if (fullscreenLandscape) {
+      this.setState({ fullScreen: false })
+      exitFullscreen();
+      return;
+    }
+
     this.setState({ fullScreen: !this.state.fullScreen }, () => {
       Orientation.getOrientation((e, orientation) => {
         if (this.state.fullScreen) {
           const initialOrient = Orientation.getInitialOrientation()
-          this.props.onFullScreen(this.state.fullScreen)
-          if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
+          onFullScreen(this.state.fullScreen)
+          if (rotateToFullScreen) Orientation.lockToLandscape()
         } else {
-          if (this.props.fullScreenOnly) this.setState({ paused: true })
-          this.props.onFullScreen(this.state.fullScreen)
-          if (this.props.rotateToFullScreen) Orientation.lockToPortrait()
+          if (fullScreenOnly) this.setState({ paused: true })
+          onFullScreen(this.state.fullScreen)
+          if (rotateToFullScreen) Orientation.lockToPortrait()
           setTimeout(() => {
-            if (!this.props.lockPortraitOnFsExit) Orientation.unlockAllOrientations()
+            if (!lockPortraitOnFsExit) Orientation.unlockAllOrientations()
           }, 1500)
         }
       })
@@ -328,7 +337,8 @@ class Video extends Component {
       playInBackground,
       playWhenInactive,
       fullScreenControlsOnly,
-      initialSeek
+      initialSeek,
+      exitFullscreen
     } = this.props
 
     const inline = {
@@ -346,8 +356,7 @@ class Video extends Component {
       left: Platform.OS === "ios" && orientation === "LANDSCAPE" ? -landscapePos : null,
       top: Platform.OS === "ios" && orientation === "LANDSCAPE" ? landscapePos : null
     };
-    console.log("orientation", orientation)
-    console.log("resize", resize)
+
     return (
       <View style={
         [
@@ -457,7 +466,8 @@ Video.propTypes = {
   lockRatio: PropTypes.number,
   fullscreenLandscape: PropTypes.bool,
   initialSeek: PropTypes.number,
-  fullScreenControlsOnly: PropTypes.bool
+  fullScreenControlsOnly: PropTypes.bool,
+  exitFullscreen: PropTypes.func
 }
 
 Video.defaultProps = {
@@ -488,7 +498,8 @@ Video.defaultProps = {
   lockRatio: undefined,
   fullscreenLandscape: false,
   fullScreenControlsOnly: false,
-  initialSeek: undefined
+  initialSeek: undefined,
+  exitFullscreen: () => { }
 }
 
 export default Video

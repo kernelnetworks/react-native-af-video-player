@@ -68,7 +68,7 @@ const TopBar = (props) => {
             }
             <TouchableOpacity
               style={{ width: 40, height: 40, justifyContent: "center", alignItems: "center" }}
-              onPress={() => toggleFS()}
+              onPress={toggleFS}
             >
               <Icon
                 iconStyle={{ fontSize: 24, color: "white" }}

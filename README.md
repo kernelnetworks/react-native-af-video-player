@@ -96,6 +96,7 @@ error                 | boolean, object | No | true                     | Pass i
 fullscreenLandscape    | boolean  | No       | false                     | Goes to fullscren when rotated to Landscape
 fullScreenControlsOnly | boolean  | No       | false                     | Only show video controls in fullscreen
 initialSeek            | number   | No       | undefined                 | Moves the video to given time (in seconds)
+exitFullscreen         | function | No       | () => {}                  | Invoked when toggling FS off in mode 'fullscreenLandscape'
 
 ### Referencing
 
