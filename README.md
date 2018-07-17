@@ -93,6 +93,9 @@ onProgress            | function | No       | (progress) => {}          | Return
 onEnd                 | function | No       | () => {}                  | Invoked when video finishes playing  
 onError               | function | No       | (error) => {}             | Returns an error message argument
 error                 | boolean, object | No | true                     | Pass in an object to Alert. See https://facebook.github.io/react-native/docs/alert.html
+fullscreenLandscape    | boolean  | No       | false                     | Goes to fullscren when rotated to Landscape
+fullScreenControlsOnly | boolean  | No       | false                     | Only show video controls in fullscreen
+initialSeek            | number   | No       | undefined                 | Moves the video to given time (in seconds)
 
 ### Referencing
 

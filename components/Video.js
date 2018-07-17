@@ -127,6 +127,7 @@ class Video extends Component {
   orientationDidChange = orientation => {
     if (orientation !== this.state.orientation) {
       this.setState({ orientation });
+      this.props.fullscreenLandscape && this.setState({ fullScreen: orientation === "LANDSCAPE" });
     }
   };
 
@@ -345,7 +346,8 @@ class Video extends Component {
       left: Platform.OS === "ios" && orientation === "LANDSCAPE" ? -landscapePos : null,
       top: Platform.OS === "ios" && orientation === "LANDSCAPE" ? landscapePos : null
     };
-
+    console.log("orientation", orientation)
+    console.log("resize", resize)
     return (
       <View style={
         [
@@ -452,7 +454,10 @@ Video.propTypes = {
   onEnd: PropTypes.func,
   onProgress: PropTypes.func,
   onLoad: PropTypes.func,
-  lockRatio: PropTypes.number
+  lockRatio: PropTypes.number,
+  fullscreenLandscape: PropTypes.bool,
+  initialSeek: PropTypes.number,
+  fullScreenControlsOnly: PropTypes.bool
 }
 
 Video.defaultProps = {
@@ -480,7 +485,10 @@ Video.defaultProps = {
   onEnd: () => { },
   onProgress: () => { },
   onLoad: () => { },
-  lockRatio: undefined
+  lockRatio: undefined,
+  fullscreenLandscape: false,
+  fullScreenControlsOnly: false,
+  initialSeek: undefined
 }
 
 export default Video
