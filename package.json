@@ -1,6 +1,6 @@
 {
   "name": "react-native-af-video-player",
-  "version": "0.1.9-14",
+  "version": "0.1.9-15",
   "dependencies": {
     "react-native-keep-awake": "^2.0.6",
     "react-native-orientation": "^3.1.0",
