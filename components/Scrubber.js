@@ -4,9 +4,8 @@ import {
   View,
   Platform,
   StyleSheet,
-  Slider as RNSlider
+  Slider
 } from 'react-native'
-import Slider from 'react-native-slider'
 
 const styles = StyleSheet.create({
   container: {
@@ -20,34 +19,22 @@ const styles = StyleSheet.create({
 
 const Scrubber = (props) => {
   const trackColor = 'rgba(255,255,255,0.5)'
-  const { progress, theme, rotation } = props
+  const { progress, theme } = props
   const thumbStyle = { width: 15, height: 15 }
   const trackStyle = { borderRadius: 1 }
   return (
     <View style={styles.container}>
-      {Platform.OS === 'ios' ?
-        <Slider
-          onValueChange={val => props.onSeek(val)}
-          onSlidingComplete={val => props.onSeekRelease(val)}
-          value={progress === Number.POSITIVE_INFINITY ? 0 : progress}
-          thumbTintColor={theme}
-          thumbStyle={thumbStyle}
-          trackStyle={trackStyle}
-          minimumTrackTintColor={theme}
-          maximumTrackTintColor={trackColor}
-          {...{ rotation }}
-        />
-        :
-        <RNSlider
-          style={styles.slider}
-          onValueChange={val => props.onSeek(val)}
-          onSlidingComplete={val => props.onSeekRelease(val)}
-          value={progress}
-          thumbTintColor={theme}
-          minimumTrackTintColor={theme}
-          maximumTrackTintColor={trackColor}
-        />
-      }
+      <Slider
+        style={styles.slider}
+        onValueChange={val => props.onSeek(val)}
+        onSlidingComplete={val =>
+          Platform.OS === "ios" ? {} : props.onSeekRelease(val)
+        }
+        value={progress}
+        thumbTintColor={theme}
+        minimumTrackTintColor={theme}
+        maximumTrackTintColor={trackColor}
+      />
     </View>
   )
 }
