@@ -2,7 +2,6 @@ import React from 'react' // eslint-disable-line
 import PropTypes from 'prop-types'
 import {
   View,
-  Platform,
   StyleSheet,
   Slider
 } from 'react-native'
@@ -27,9 +26,7 @@ const Scrubber = (props) => {
       <Slider
         style={styles.slider}
         onValueChange={val => props.onSeek(val)}
-        onSlidingComplete={val =>
-          Platform.OS === "ios" ? {} : props.onSeekRelease(val)
-        }
+        onSlidingComplete={val => props.onSeekRelease(val)}
         value={progress}
         thumbTintColor={theme}
         minimumTrackTintColor={theme}
