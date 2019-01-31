@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import VideoPlayer from "react-native-video";
 import KeepAwake from "react-native-keep-awake";
-import Orientation from "react-native-orientation";
+import Orientation from "react-native-orientation-locker";
 import Icon from "../../../app/components/Icon";
 import { Controls } from "./";
 const Win = Dimensions.get("window");
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
 class Video extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       paused: !props.autoPlay,
       muted: false,
@@ -73,13 +74,13 @@ class Video extends Component {
 
   componentDidMount() {
     Orientation.addOrientationListener(this.orientationDidChange);
-    Orientation.addSpecificOrientationListener(this.onRotated);
+    Orientation.addDeviceOrientationListener(this.onRotated);
     BackHandler.addEventListener("hardwareBackPress", this.BackHandler);
   }
 
   componentWillUnmount() {
     Orientation.removeOrientationListener(this.orientationDidChange);
-    Orientation.removeSpecificOrientationListener(this.onRotated);
+    Orientation.removeDeviceOrientationListener(this.onRotated);
     BackHandler.removeEventListener("hardwareBackPress", this.BackHandler);
   }
 
@@ -366,18 +367,18 @@ class Video extends Component {
 
     let landscapePos = (Win.height - Win.width) / 2;
     let resize =
-      orientation === "LANDSCAPE"
+      orientation === "LANDSCAPE-LEFT" || orientation === "LANDSCAPE-RIGHT"
         ? { height: Win.width, width: Win.height }
         : { height: Win.height, width: Win.width };
 
     let rotationStyle = {
       transform: [{ rotate: rotation }],
       left:
-        Platform.OS === "ios" && orientation === "LANDSCAPE"
+        Platform.OS === "ios" && (orientation === "LANDSCAPE-LEFT" || orientation === "LANDSCAPE-RIGHT")
           ? -landscapePos
           : null,
       top:
-        Platform.OS === "ios" && orientation === "LANDSCAPE"
+        Platform.OS === "ios" && (orientation === "LANDSCAPE-LEFT" || orientation === "LANDSCAPE-RIGHT")
           ? landscapePos
           : null
     };
@@ -501,7 +502,7 @@ Video.defaultProps = {
   logo: undefined,
   resizeMode: "contain",
   onMorePress: undefined,
-  onFullScreen: () => {},
+  onFullScreen: () => { },
   onTimedMetadata: undefined,
   theme: "white",
   placeholder: undefined,
@@ -515,16 +516,16 @@ Video.defaultProps = {
   lockPortraitOnFsExit: false,
   style: {},
   error: true,
-  onError: () => {},
-  onEnd: () => {},
-  onProgress: () => {},
-  onLoad: () => {},
+  onError: () => { },
+  onEnd: () => { },
+  onProgress: () => { },
+  onLoad: () => { },
   lockRatio: undefined,
   fullscreenLandscape: false,
   fullScreenControlsOnly: false,
   allowRotation: true,
   initialSeek: undefined,
-  exitFullscreen: () => {}
+  exitFullscreen: () => { }
 };
 
 export default Video;
