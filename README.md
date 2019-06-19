@@ -28,7 +28,7 @@ Then link
 ```shell
 react-native link react-native-video
 react-native link react-native-keep-awake
-react-native link react-native-orientation
+react-native link react-native-orientation-locker
 react-native link react-native-linear-gradient
 ```
 
